@@ -1,23 +1,26 @@
 package main
 
 import (
-	"flag"
+	"runtime"
 	"sync"
 )
 
 
-func bomb(wg *sync.WaitGroup){
+func bomb(wg *sync.WaitGroup) {
 	wg.Add(1)
 	go bomb(wg)
 	for {
 
 	}
+	wg.Done()
 }
 
-func main(){
+func main() {
+	n := runtime.NumCPU()
 	var wg sync.WaitGroup
-	wg.Add(1)
-	go bomb(&wg)
+	wg.Add(n)
+	for i := 0; i < n; i++ {
+		go bomb(&wg)
+	}
 	wg.Wait()
 }
-
